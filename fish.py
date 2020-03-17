@@ -78,7 +78,15 @@ def humanTakeTurn():
     global currTurn
     print("It's your turn!")
     if len(playerHands[0]) == 0: # Need testing
-        currTurn = int(input("Your hand is empty.\n1. " + playerNames[1] + "\n2. " + playerNames[2] + "\nGive your turn to which teammate?"))
+        while True:
+            try:
+                currTurn = int(input("Your hand is empty.\n1. " + playerNames[1] + "\n2. " + playerNames[2] + "\nGive your turn to which teammate?"))
+                if not(currTurn in [1, 2]):
+                    raise Exception("Input may only be 1 or 2.")
+            except Exception as err:
+                print("Bad input: " + str(err))
+            else:
+                break
         return
     printPlayerHand()
     while True:
@@ -111,7 +119,13 @@ def enemyTakeTurn(): #TODO: Enemy AI. Currently, a very basic random choice.
             currTurn = random.randrange(3, 6) # random bad guy
         print("Turn given to " + playerNames[currTurn] + ".")
         return
-    cardAskedFor = random.choice(listCardsInHalfSuitOf(random.choice(playerHands[currTurn]), currTurn)) # Pick a random card in this player's hand and find a card in its half-suit that that player doesn't have.
+    while True:
+        try: # in case they have the full half-suit.
+            cardAskedFor = random.choice(listCardsInHalfSuitOf(random.choice(playerHands[currTurn]), currTurn)) # Pick a random card in this player's hand and find a card in its half-suit that that player doesn't have.
+        except:
+            continue
+        else:
+            break
     while True:
         playerAsked = random.randrange(0, 3) # random good guy
         if len(playerHands[playerAsked]): # Don't ask someone whose hand is empty
@@ -120,14 +134,19 @@ def enemyTakeTurn(): #TODO: Enemy AI. Currently, a very basic random choice.
 
 def allyTakeTurn(): #TODO: Ally AI. Currently, a very basic random choice.
     global currTurn
-    print("Length of " + str(len(playerHands[currTurn])))
     if len(playerHands[currTurn]) == 0: # Needs testing
         print(playerNames[currTurn] + "'s hand is empty.")
         while len(playerHands[currTurn]) == 0: # Don't give your turn to someone else with an empty hand
             currTurn = random.randrange(0, 3) # random good guy
         print("Turn given to " + playerNames[currTurn] + ".")
         return
-    cardAskedFor = random.choice(listCardsInHalfSuitOf(random.choice(playerHands[currTurn]), currTurn)) # Pick a random card in this player's hand and find a card in its half-suit that that player doesn't have.
+    while True:
+        try: # in case they have the full half-suit.
+            cardAskedFor = random.choice(listCardsInHalfSuitOf(random.choice(playerHands[currTurn]), currTurn)) # Pick a random card in this player's hand and find a card in its half-suit that that player doesn't have.
+        except:
+            continue
+        else:
+            break
     while True:
         playerAsked = random.randrange(3, 6) # random bad guy
         if len(playerHands[playerAsked]): # Don't ask someone whose hand is empty
@@ -161,7 +180,15 @@ def promptClaim(): # Currently, this is only for the human. Parts of this should
         print("1. You (hand size " + str(len(playerHands[0])) + ")\n2. " + playerNames[1] + " (hand size " + str(len(playerHands[1])) + ")\n3. " + playerNames[2] + " (hand size " + str(len(playerHands[2])) + ")")
         oof = ""
         for card in range(6 * halfSuit, 6 * halfSuit + 6): # for all cards in that half-suit
-            player = int(input("Who has the " + nameCard(card) + "? ")) - 1
+            while True:
+                try:
+                    player = int(input("Who has the " + nameCard(card) + "? ")) - 1
+                    if not(player in [0, 1, 2]):
+                        raise Exception("Input must be 0, 1, or 2.")
+                except Exception as err:
+                    print("Bad input: ")
+                else:
+                    break
             if not card in playerHands[player]: # If at any point part of the claim is wrong, label it wrong, but don't stop it
                 claimGood = False
             for player in range(6):
