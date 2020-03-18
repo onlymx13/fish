@@ -15,10 +15,10 @@ import random
 
 currTurn = random.randrange(0,6)
 playerCount = 6
-playerHands = [[0 for j in range (0,9)] for i in range (0,6)] # initialize hands to empty
+playerHands = [[0 for j in range (9)] for i in range (6)] # initialize hands to empty
 goodPoints = 0
 badPoints = 0
-playerNames = ["" for i in range (0, 6)]
+playerNames = ["" for i in range (6)]
 
 def nameCard(card):
     cardNames = ["2", "3", "4", "5", "6", "7", "9", "10", "Jack", "Queen", "King", "Ace"];
@@ -183,7 +183,7 @@ def promptClaim(): # Currently, this is only for the human. Parts of this should
             while True:
                 try:
                     player = int(input("Who has the " + nameCard(card) + "? ")) - 1
-                    if not(player in [0, 1, 2]):
+                    if not(player in range(3)):
                         raise Exception("Input must be 0, 1, or 2.")
                 except Exception as err:
                     print("Bad input: ")
@@ -220,6 +220,7 @@ for card in deck: # place shuffled cards in hands
 halfSuitsLeft = [("Low Clubs", 0), ("High Clubs", 1), ("Low Hearts", 2), ("High Hearts", 3), ("Low Spades", 4), ("High Spades", 5), ("Low Diamonds", 6), ("High Diamonds", 7), ("8s and Jokers", 8)]
 promptPlayerNames()
 printPlayerHand()
+
 while True:
     printPoints()
     takeTurn()
@@ -229,6 +230,6 @@ while True:
         print("The game is over!")
         if goodPoints > badPoints:
             print("The good guys won!")
-        else:
+        else: # with 9 half-suits, you can't tie
             print("The bad guys won!")
 
